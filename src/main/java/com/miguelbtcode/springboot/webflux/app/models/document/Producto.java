@@ -21,6 +21,7 @@ public class Producto {
     @DateTimeFormat(pattern = "yyyy-MM-dd")
     private Date createAt;
     @Valid
+    @NotNull
     private Categoria categoria;
     private String foto;
 
