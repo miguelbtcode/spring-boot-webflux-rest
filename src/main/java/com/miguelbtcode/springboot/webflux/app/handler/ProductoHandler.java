@@ -4,7 +4,6 @@ import com.miguelbtcode.springboot.webflux.app.models.document.Producto;
 import com.miguelbtcode.springboot.webflux.app.models.service.ProductoService;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
-import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.server.ServerRequest;
 import org.springframework.web.reactive.function.server.ServerResponse;
 import reactor.core.publisher.Mono;
