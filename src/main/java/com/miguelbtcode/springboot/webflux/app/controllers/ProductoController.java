@@ -4,7 +4,6 @@ import com.miguelbtcode.springboot.webflux.app.models.document.Producto;
 import com.miguelbtcode.springboot.webflux.app.models.service.ProductoService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.mongodb.core.aggregation.VariableOperators;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -102,20 +101,18 @@ public class ProductoController {
                     .created(URI.create("/api/productos/".concat(p.getId())))
                     .contentType(MediaType.APPLICATION_JSON)
                     .body(respuesta);
-            });        }).onErrorResume(throwable -> {
-
-            return Mono.just(throwable).cast(WebExchangeBindException.class)
-                    .flatMap(e -> Mono.just(e.getFieldErrors()))
-                    .flatMapMany(Flux::fromIterable)
-                    .map(fieldError -> "El campo " + fieldError.getField() + " " + fieldError.getDefaultMessage())
-                    .collectList()
-                    .flatMap(list -> {
-                        respuesta.put("errors", list);
-                        respuesta.put("timestamp", new Date());
-                        respuesta.put("status", HttpStatus.BAD_REQUEST.value());
-                        return Mono.just(ResponseEntity.badRequest().body(respuesta));
-                    });
-        });
+            });
+        }).onErrorResume(throwable -> Mono.just(throwable).cast(WebExchangeBindException.class)
+                .flatMap(e -> Mono.just(e.getFieldErrors()))
+                .flatMapMany(Flux::fromIterable)
+                .map(fieldError -> "El campo " + fieldError.getField() + " " + fieldError.getDefaultMessage())
+                .collectList()
+                .flatMap(list -> {
+                    respuesta.put("errors", list);
+                    respuesta.put("timestamp", new Date());
+                    respuesta.put("status", HttpStatus.BAD_REQUEST.value());
+                    return Mono.just(ResponseEntity.badRequest().body(respuesta));
+        }));
     }
 
     @PutMapping("/{id}")
